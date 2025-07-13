@@ -1,0 +1,72 @@
+[
+  {
+    "question": "What is your full name?",
+    "answer": "My full name is Suryakant Yadav.",
+    "keywords": ["name", "who", "are", "you", "identity", "what", "is"]
+  },
+  {
+    "question": "What is your professional background or current role?",
+    "answer": "I am a Software Engineer with proficiency in Frontend Web Development.",
+    "keywords": ["role", "job", "profession", "career", "work", "what", "do", "you", "background", "current", "expertise", "specialty"]
+  },
+  {
+    "question": "What are your key skills and areas of expertise?",
+    "answer": "My core skills include Java, Javascript, Reactjs, Nextjs, Redux, Firebase, TailwindCSS.",
+    "keywords": ["skills", "abilities", "proficient", "fluent", "expert", "technologies", "tools", "competencies", "forte", "strong", "points"]
+  },
+  {
+    "question": "Tell me about your work experience.",
+    "answer": "I am currently working as a Software Developer Intern at Colladome.",
+    "keywords": ["experience", "years", "background", "history", "past", "roles", "career", "companies", "work", "where", "did", "you", "work"]
+  },
+  {
+    "question": "What is your educational background?",
+    "answer": "I hold a Bachelor's in Computer Science from Galgotias University, graduating in 2026.",
+    "keywords": ["education", "degree", "university", "college", "schooling", "academic", "qualifications", "learn", "study"]
+  },
+  {
+    "question": "How can I contact you for professional inquiries?",
+    "answer": "The best way to reach me for professional inquiries is via email at suryakant160502@gmail.com or through my LinkedIn profile: https://www.linkedin.com/in/suryakant-yadav-6192a224a/.",
+    "keywords": ["contact", "reach", "get", "touch", "email", "phone", "linkedin", "social", "media", "connect", "inquiry", "talk", "communicate"]
+  },
+  {
+    "question": "Where are you located and are you open to remote work or relocation?",
+    "answer": "I am currently based in Noida, India. I am open to remote work and willing to travel for projects as needed. I am also open to relocation for the right opportunity.",
+    "keywords": ["location", "where", "live", "remote", "travel", "relocate", "work", "from", "home", "hybrid", "onsite", "geography", "position"]
+  },
+  {
+    "question": "What are your career goals or what kind of opportunities are you looking for?",
+    "answer": "My long-term career goal is to lead tech team of a product-based company and to work on innovative projects that have a positive impact on society.",
+    "keywords": ["goals", "aspirations", "future", "career", "ambition", "objectives", "looking", "for", "opportunities", "next", "step"]
+  },
+  {
+    "question": "Do you have a portfolio or resume I can view?",
+    "answer": "Yes, you can view my portfolio of work at https://themyth.site/. My full resume/CV is available on my portfolio website.",
+    "keywords": ["portfolio", "resume", "CV", "samples", "work", "projects", "examples", "link", "website", "show", "me", "documents"]
+  },
+  {
+    "question": "What are your interests or hobbies outside of work?",
+    "answer": "Outside of work, I enjoy playing chess, watching sci-fi series or movies, and learning about new things.",
+    "keywords": ["hobbies", "interests", "personal", "fun", "outside", "work", "leisure", "what", "do", "you", "like", "do"]
+  },
+  {
+    "question": "Tell me about a React project you've worked on.",
+    "answer": "I worked on a React project where I Developed a web application for sharing people's travel experiences(safarnama){https://safarnama.themyth.site}. It involved creating reusable components, managing state with Context API, and using Firebase as the backend for data storage, authentication, and database.",
+    "keywords": ["React", "project", "web", "application", "development", "components", "state", "Context API", "Firebase"]
+  },
+  {
+    "question": "What is your experience with Next.js?",
+    "answer": "I have used Next.js to build few projects, one of them being a website for a drop servicing company[https://warelinetech.com/].",
+    "keywords": ["Next.js", "experience", "server-side", "rendered", "applications", "static", "site", "generation", "API", "routes"]
+  },
+  {
+    "question": "How do you manage state in your React applications?",
+    "answer": "I primarily use Context API for state management in my React applications, but I also have experience with Redux for more complex state needs.",
+    "keywords": ["state", "management", "React", "Context API", "Redux", "applications"]
+  },
+  {
+    "question": "What is your approach to learning new technologies or frameworks?",
+    "answer": "I prefer hands-on learning by building small projects or components using new technologies. I also utilise LLMs for guidance and mentorship.",
+    "keywords": ["learning", "new", "technologies", "frameworks", "approach", "hands-on", "projects", "courses"]
+  }
+]

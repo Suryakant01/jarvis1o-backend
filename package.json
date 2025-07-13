@@ -1,0 +1,27 @@
+{
+  "name": "jarvis-1o",
+  "version": "1.0.0",
+  "description": "jarvis test proj",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon server.js",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "jarvis",
+    "gemini",
+    "ai"
+  ],
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "fuse.js": "^7.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "author": "myth",
+  "license": "ISC"
+}
