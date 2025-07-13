@@ -3,11 +3,23 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const Fuse = require('fuse.js'); // Import Fuse.js
 
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-app.use(cors());
+// Configure CORS for production readiness
+const allowedOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : ['http://localhost:3000', 'http://localhost:5173']; // Add common local frontend ports
+
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) { // Allow requests with no origin (e.g., cURL) or from allowed origins
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    }
+}));
 app.use(express.json());
 
 let faqs = [];
@@ -26,12 +38,18 @@ if (!process.env.GEMINI_API_KEY) {
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
-// --- SOLUTION PART 1: A list of common words to ignore ---
-const stopwords = new Set([
-    'i', 'a', 'about', 'an', 'are', 'as', 'at', 'be', 'by', 'can', 'com', 'for', 'from',
-    'how', 'in', 'is', 'it', 'of', 'on', 'or', 'that', 'the', 'this', 'to', 'was',
-    'what', 'when', 'where', 'who', 'will', 'with', 'www', 'my', 'your'
-]);
+// Initialize Fuse.js for fuzzy searching
+const fuseOptions = {
+    includeScore: true, // We need the score to filter relevance
+    keys: [
+        { name: 'question', weight: 0.7 }, // Prioritize matching in the question
+        { name: 'keywords', weight: 0.3 }  // Less priority for keywords
+    ],
+    threshold: 0.4, // Adjust this: 0.0 is exact, 1.0 is very loose. Lower means stricter.
+    ignoreLocation: true, // Don't care about the position of the match
+    findAllMatches: true // Find all matches for a given pattern
+};
+const fuse = new Fuse(faqs, fuseOptions);
 
 app.post('/api/chat', async (req, res) => {
     try {
@@ -39,49 +57,30 @@ app.post('/api/chat', async (req, res) => {
         if (!userQuestion) {
             return res.status(400).json({ error: 'Question is required.' });
         }
-
-        // --- SOLUTION PART 2: An improved search that ignores stopwords and finds multiple relevant docs ---
-
-        // Filter out stopwords from the user's question for a cleaner search
-        const userWords = userQuestion.toLowerCase().split(/\s+/)
-            .filter(word => !stopwords.has(word));
-
-        const scoredFaqs = faqs.map(faq => {
-            const combinedKeywords = [
-                ...faq.keywords,
-                ...faq.question.toLowerCase().split(/\s+/).filter(word => !stopwords.has(word)),
-            ];
-
-            let score = 0;
-            userWords.forEach(word => {
-                if (combinedKeywords.includes(word)) {
-                    score++;
-                }
-            });
-            return { faq, score };
-        });
-
-        // Sort by score (descending) and filter out any with a score of 0
-        const relevantFaqs = scoredFaqs
-            .filter(item => item.score > 0)
-            .sort((a, b) => b.score - a.score);
-
-        console.log("Top relevant documents found: ", relevantFaqs.slice(0, 3));
-
-        // --- END OF NEW SEARCH LOGIC ---
-
-        let context = "No relevant information found in the knowledge base.";
         
+        // Perform search using Fuse.js
+        const searchResults = fuse.search(userQuestion);
+
+        // Filter results by a relevance threshold (lower score is better match)
+        // Take the top 3 most relevant documents
+        const relevantFaqs = searchResults
+            .filter(item => item.score < 0.6) // Only include results with a score below this threshold
+            .slice(0, 3);
+
+        // console.log("Fuse search results (top 3): ", relevantFaqs.map(r => ({ item: r.item.question, score: r.score })));
+
+        let context = ""; // Initialize context as empty
         // Take the top 3 (or fewer) most relevant documents to build the context
         if (relevantFaqs.length > 0) {
-            context = relevantFaqs.slice(0, 3).map(item => 
-                `Question: ${item.faq.question}\nAnswer: ${item.faq.answer}`
+            context = relevantFaqs.map(item => 
+                `Question: ${item.item.question}\nAnswer: ${item.item.answer}`
             ).join('\n\n');
         }
         
-        const prompt = `
-You are a helpful customer support chatbot. Based ONLY on the following context, answer the user's question.
-If the context does not contain the answer, say "I'm sorry, I don't have information on that. Please ask another question about our shipping, orders, or policies."
+        let prompt = `
+You are a helpful chatbot providing information about Suryakant Yadav based on his provided professional and personal details.
+Based ONLY on the following context, answer the user's question.
+If the context does not contain the answer, say "I'm sorry, I don't have information on that specific topic. Please ask another question about Suryakant's background, skills, experience, or contact details."
 Do not use any information outside of the provided context.
 
 Context:
@@ -91,6 +90,11 @@ ${context}
 
 User's Question: ${userQuestion}
 `;
+
+        // If no relevant context found, use a specific fallback prompt for the LLM
+        if (relevantFaqs.length === 0) {
+            prompt = "I'm sorry, I don't have information on that specific topic. Please ask another question about Suryakant's background, skills, experience, or contact details.";
+        }
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
